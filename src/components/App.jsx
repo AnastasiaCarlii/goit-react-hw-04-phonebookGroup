@@ -37,10 +37,6 @@ export function App() {
     setContacts(prevState => [...prevState, { ...data, id: nanoid() }]);
   };
 
-  // const handleAddContact = newContact => {
-  //   setContacts(prevContacts => [...prevContacts, newContact]);
-  // };
-
   const deleteContacts = id => {
     setContacts(prevState => prevState.filter(contact => contact.id !== id));
   };

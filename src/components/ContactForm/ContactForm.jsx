@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import { Formik, ErrorMessage } from 'formik';
 import { object, string } from 'yup';
@@ -33,49 +33,64 @@ const schema = object().shape({
     .required(),
 });
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
+export function ContactForm({ onSubmit }) {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  // const changeName = e => {
+  //   setName(e.target.value);
+  // };
+  // const changeNumber = e => {
+  //   setNumber(e.target.value);
+  // };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    onSubmit({ name, number });
+
+    setName('');
+    setNumber('');
   };
 
-  handleSubmit = (values, { resetForm }) => {
-    this.props.onSubmit({ ...values });
+  return (
+    <Formik
+      initialValues={{ name: '', number: '' }}
+      validationSchema={schema}
+      onSubmit={handleSubmit}
+    >
+      <FormWrap>
+        <InputName>
+          Name
+          <FormInput
+            autoComplete="off"
+            type="text"
+            name="name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+          />
+        </InputName>
 
-    resetForm();
-  };
+        <ErrMessage>
+          <ErrorMessage name="name" />
+        </ErrMessage>
+        <InputName>
+          Number
+          <FormInput
+            autoComplete="off"
+            type="tel"
+            name="number"
+            value={number}
+            onChange={e => setNumber(e.target.value)}
+          />
+        </InputName>
 
-  render() {
-    const { name, number } = this.state;
+        <ErrMessage>
+          <ErrorMessage name="number" component="div" />
+        </ErrMessage>
 
-    return (
-      <Formik
-        initialValues={{ name, number }}
-        validationSchema={schema}
-        onSubmit={this.handleSubmit}
-      >
-        <FormWrap>
-          <InputName>
-            Name
-            <FormInput autoComplete="off" type="text" name="name" />
-          </InputName>
-
-          <ErrMessage>
-            <ErrorMessage name="name" />
-          </ErrMessage>
-          <InputName>
-            Number
-            <FormInput autoComplete="off" type="tel" name="number" />
-          </InputName>
-
-          <ErrMessage>
-            <ErrorMessage name="number" component="div" />
-          </ErrMessage>
-
-          <SubmitBtn type="submit">Add contact</SubmitBtn>
-        </FormWrap>
-      </Formik>
-    );
-  }
+        <SubmitBtn type="submit">Add contact</SubmitBtn>
+      </FormWrap>
+    </Formik>
+  );
 }
+
 export default ContactForm;
